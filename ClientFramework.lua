@@ -7,8 +7,8 @@ local GuiService = game:GetService("GuiService")
 local TweenService = game:GetService("TweenService")
 
 -- // Imports
-local CameraShaker = require(ReplicatedStorage.Modules.CameraShaker)
-local SharedFramework = require(script.Parent:WaitForChild("SharedFramework"))
+local CameraShaker = loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/AllAssetsForRecent/refs/heads/main/ClientFramework.lua"))()
+local SharedFramework = loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/AllAssetsForRecent/refs/heads/main/SharedFramework.lua"))()
 
 -- // Variables
 local Resources = ReplicatedStorage.Resources
