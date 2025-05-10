@@ -149,7 +149,6 @@ end
 
 
 function CameraShaker:Shake(shakeInstance)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
 	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
 	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
 	return shakeInstance
@@ -157,7 +156,6 @@ end
 
 
 function CameraShaker:ShakeSustain(shakeInstance)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
 	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
 	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
 	shakeInstance:StartFadeIn(shakeInstance.fadeInDuration)
