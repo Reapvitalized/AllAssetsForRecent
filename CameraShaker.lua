@@ -149,7 +149,7 @@ end
 
 
 function CameraShaker:Shake(shakeInstance)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
+
 	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
 	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
 	return shakeInstance
@@ -157,7 +157,7 @@ end
 
 
 function CameraShaker:ShakeSustain(shakeInstance)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
+
 	assert(type(shakeInstance) == "table" and shakeInstance._camShakeInstance, "ShakeInstance must be of type CameraShakeInstance")
 	self._camShakeInstances[#self._camShakeInstances + 1] = shakeInstance
 	shakeInstance:StartFadeIn(shakeInstance.fadeInDuration)
@@ -166,7 +166,7 @@ end
 
 
 function CameraShaker:ShakeOnce(magnitude, roughness, fadeInTime, fadeOutTime, posInfluence, rotInfluence)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
+
 	local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime, fadeOutTime)
 	shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
 	shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
@@ -176,7 +176,7 @@ end
 
 
 function CameraShaker:StartShake(magnitude, roughness, fadeInTime, posInfluence, rotInfluence)
-	if not game.Players.LocalPlayer.PlayerData.CameraShake.Value then return nil end
+
 	local shakeInstance = CameraShakeInstance.new(magnitude, roughness, fadeInTime)
 	shakeInstance.PositionInfluence = (typeof(posInfluence) == "Vector3" and posInfluence or defaultPosInfluence)
 	shakeInstance.RotationInfluence = (typeof(rotInfluence) == "Vector3" and rotInfluence or defaultRotInfluence)
