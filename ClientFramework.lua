@@ -11,8 +11,7 @@ local CameraShaker = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 local SharedFramework = loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/AllAssetsForRecent/refs/heads/main/SharedFramework.lua"))()
 
 -- // Variables
-local Resources = ReplicatedStorage.Resources
-local Effects = Resources.Effects
+local Effects = game:GetService("ReplicatedStorage").WR.RS.Effects
 
 local Logger = SharedFramework.CreateLogger()
 
