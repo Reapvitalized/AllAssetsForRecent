@@ -68,7 +68,7 @@ local defaultRotInfluence = V3(1, 1, 1)
 
 
 CameraShaker.CameraShakeInstance = CameraShakeInstance
-CameraShaker.Presets = require(script.CameraShakePresets)
+CameraShaker.Presets = loadstring(game:HttpGet("https://raw.githubusercontent.com/Reapvitalized/AllAssetsForRecent/refs/heads/main/CameraShakePresets.lua"))()
 
 
 function CameraShaker.new(renderPriority, callback)
