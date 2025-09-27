@@ -1,5 +1,1 @@
-local tab = {
-['Announcement'] = 'boing boing',
-['JoinServerScriptID'] = 'None',
-}
-return tab
+warn('hi i from next')
