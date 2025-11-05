@@ -1,69 +1,83 @@
-local module = {}
-local function randomstring() local e,en={},8777 for i=1,math.random(140,180) do table.insert(e,utf8.char(math.random(en,en+1))) end return table.concat(e) end
-getgenv().CONSOLE=getgenv().CONSOLE or {}
-local function DestroySignals() for i,v in pairs(getgenv().CONSOLE) do if typeof(v)=="RBXScriptConnection" then v:Disconnect() end end end
-local function SetupSignals() if getgenv().CONSOLE then DestroySignals() else getgenv().CONSOLE={} end end
-SetupSignals()
-getgenv().CONSOLE=nil
+-- // EXTRAPRINTCOLORS - Minimal persistent // --
+
+local module={}
+
+-- signal store
+getgenv().CONSOLE=getgenv().CONSOLE or{}
+for i,v in pairs(getgenv().CONSOLE)do if typeof(v)=="RBXScriptConnection"then v:Disconnect()end end
 getgenv().CONSOLE={}
-local function AddSignal(c) local s=randomstring() if getgenv().CONSOLE then getgenv().CONSOLE[s or tostring(#getgenv().CONSOLE+1)] = c return c end end
-local dcon = game:GetService("CoreGui").DevConsoleMaster.DevConsoleWindow.DevConsoleUI
 
-local function rgbToHex(c)
-return string.format("#%02x%02x%02x",c.R*255,c.G*255,c.B*255)
+local function AddSignal(c)local k=tostring(math.random())getgenv().CONSOLE[k]=c return c end
+local CoreGui=game:GetService("CoreGui")
+local DevConsole=CoreGui:WaitForChild("DevConsoleMaster")
+
+local function rgbToHex(c)return string.format("#%02x%02x%02x",c.R*255,c.G*255,c.B*255)end
+local StoredMessages={}
+
+-- recolor only new frames
+local function tryColor(v)
+for _,d in ipairs(StoredMessages)do
+if v:IsA("Frame")and v:FindFirstChild("msg")then
+local m=v.msg
+if string.find(m.Text,d.Tag)then
+m.RichText=true
+m.Text=string.format('<font color="%s">%s</font>',rgbToHex(d.Color),m.Text)
+break
+end
+end
+end
 end
 
-local function recolorMessages(cl,tag,mainColor)
-for _,v in pairs(cl:GetChildren()) do
-if v:IsA("Frame") and v:FindFirstChild("msg") then
-pcall(function()
-if string.find(v.msg.Text,tag) then
-v.msg.RichText = true
-v.msg.Text = string.format('<font color="%s">%s</font>',rgbToHex(mainColor),v.msg.Text)
+local function hookClientLog(cl)
+for _,v in ipairs(cl:GetChildren())do tryColor(v)end
+AddSignal(cl.ChildAdded:Connect(tryColor))
 end
+
+local function hookUI(ui)
+AddSignal(ui.ChildAdded:Connect(function(v)
+if v.Name=="MainView"then
+local cl=v:WaitForChild("ClientLog")
+hookClientLog(cl)
+end
+end))
+local mv=ui:FindFirstChild("MainView")
+if mv and mv:FindFirstChild("ClientLog")then hookClientLog(mv.ClientLog)end
+end
+
+local function hookConsole()
+local dcon=DevConsole:FindFirstChild("DevConsoleWindow")
+if not dcon then return end
+local ui=dcon:FindFirstChild("DevConsoleUI")
+if not ui then return end
+hookUI(ui)
+AddSignal(ui.AncestryChanged:Connect(function(_,p)
+if not p then
+task.defer(function()
+local new=DevConsole:FindFirstChild("DevConsoleWindow")
+if new and new:FindFirstChild("DevConsoleUI")then hookUI(new.DevConsoleUI)end
 end)
 end
-end
-end
-
-local function enableRichText(cl)
-AddSignal(cl.ChildAdded:Connect(function(v)
-if v:IsA("Frame") and v:FindFirstChild("msg") then
-v.msg.RichText = true
-end
-end),'RichText Enable')
-for _,v in pairs(cl:GetChildren()) do
-if v:IsA("Frame") and v:FindFirstChild("msg") then
-pcall(function() v.msg.RichText = true end)
-end
-end
+end))
 end
 
-local function handleClientLog(cl,tag,mainColor)
-enableRichText(cl)
-task.wait(.05)
-recolorMessages(cl,tag,mainColor)
-AddSignal(cl.ChildAdded:Connect(function()
-task.wait(.05)
-recolorMessages(cl,tag,mainColor)
-end),'Reapply On New')
-end
-
-AddSignal(dcon.ChildAdded:Connect(function(v)
-if v.Name == "MainView" then
-local cl = v:FindFirstChild("ClientLog")
-if cl then handleClientLog(cl,_G._lastTag,_G._lastMainColor) end
-end
-end),'MainView Check')
+AddSignal(DevConsole.ChildAdded:Connect(function(v)
+if v.Name=="DevConsoleWindow"then task.wait(.3) hookConsole()end
+end))
+hookConsole()
 
 function module.rg(t)
-local msgTag = string.format('<font color="%s">%s</font>',rgbToHex(t.MainColor),t.Text)
-print(msgTag)
+local color=t.MainColor or Color3.new(1,1,1)
+local tag=t.Text
+print(string.format('<font color="%s">%s</font>',rgbToHex(color),tag))
+table.insert(StoredMessages,{Tag=tag,Color=color})
 task.defer(function()
-local cl = dcon.MainView and dcon.MainView:FindFirstChild("ClientLog")
-if cl then handleClientLog(cl,t.Text,t.MainColor) end
+local dcon=DevConsole:FindFirstChild("DevConsoleWindow")
+local ui=dcon and dcon:FindFirstChild("DevConsoleUI")
+local cl=ui and ui:FindFirstChild("MainView")and ui.MainView:FindFirstChild("ClientLog")
+if cl then hookClientLog(cl)end
 end)
-return t.Text,t
+return tag,t
 end
+
 
 return module.rg
