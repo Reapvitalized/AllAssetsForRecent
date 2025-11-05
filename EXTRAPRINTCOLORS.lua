@@ -1,8 +1,6 @@
--- // EXTRAPRINTCOLORS - Minimal persistent // --
 
 local module={}
 
--- signal store
 getgenv().CONSOLE=getgenv().CONSOLE or{}
 for i,v in pairs(getgenv().CONSOLE)do if typeof(v)=="RBXScriptConnection"then v:Disconnect()end end
 getgenv().CONSOLE={}
@@ -13,8 +11,6 @@ local DevConsole=CoreGui:WaitForChild("DevConsoleMaster")
 
 local function rgbToHex(c)return string.format("#%02x%02x%02x",c.R*255,c.G*255,c.B*255)end
 local StoredMessages={}
-
--- recolor only new frames
 local function tryColor(v)
 for _,d in ipairs(StoredMessages)do
 if v:IsA("Frame")and v:FindFirstChild("msg")then
