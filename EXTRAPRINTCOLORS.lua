@@ -1,4 +1,11 @@
-
+task.spawn(function()
+    task.wait(.03)
+    if game:GetService("StarterGui"):GetCore("DevConsoleVisible") ~= true then
+game:GetService("StarterGui"):SetCore("DevConsoleVisible", true)
+task.wait()
+game:GetService("StarterGui"):SetCore("DevConsoleVisible", false)
+end
+  end)
 local module={}
 
 getgenv().CONSOLE=getgenv().CONSOLE or{}
